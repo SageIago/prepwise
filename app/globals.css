@@ -1,8 +1,8 @@
 @import "tailwindcss";
-
-/* @plugin "tailwindcss-animate"; */
+@plugin "tailwindcss-animate";
 
 /* @plugin "eslint-plugin-tailwindcss"; */
+
 
 @custom-variant dark (&:is(.dark *));
 
