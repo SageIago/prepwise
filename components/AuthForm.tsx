@@ -44,17 +44,18 @@ const AuthForm = (props: AuthFormProps) => {
       if (props.type === "sign-up") {
         console.log("SIGN-UP", values);
 
-        toast.success("Account Created Successfully, Please Sign In")
+        toast.success("Account Created Successfully, Please Sign In");
 
-        router.push("/sign-in")
+        router.push("/sign-in");
       } else {
-        toast.success("Signed In Successfully")
+        toast.success("Signed In Successfully");
 
-        router.push("/")
+        router.push("/");
         console.log("SIGN-IN", values);
       }
     } catch (error) {
       console.log(error);
+      toast.error(`An error occured. Please Try Again ${error}`);
     }
   }
 

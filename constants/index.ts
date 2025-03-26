@@ -208,7 +208,7 @@ export const dummyInterviews: Interview[] = [
   {
     id: "1",
     userId: "user1",
-    role: "Frontend Developer",
+    role: "Frontend Dev",
     type: "Technical",
     techstack: ["React", "TypeScript", "Next.js", "Tailwind CSS"],
     level: "Junior",
@@ -219,7 +219,7 @@ export const dummyInterviews: Interview[] = [
   {
     id: "2",
     userId: "user1",
-    role: "Full Stack Developer",
+    role: "Full Stack Dev",
     type: "Mixed",
     techstack: ["Node.js", "Express", "MongoDB", "React"],
     level: "Senior",

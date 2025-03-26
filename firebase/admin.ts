@@ -1,0 +1,28 @@
+import { cert, getApps, initializeApp } from "firebase-admin/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+
+const initFirebaseAdmin = () => {
+  const apps = getApps();
+
+  if (!apps.length) {
+    initializeApp({
+      credential: cert({
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID as string,
+        clientEmail: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_EMAIL as string,
+        privateKey: process.env.NEXT_PUBLIC_FIREBASE_PRIVATE_KEY?.replace(
+          /\\n/g,
+          "\n"
+        ) as string,
+      }),
+    });
+  }
+
+
+  return {
+    auth: getAuth(),
+    db: getFirestore(),
+  }
+};
+
+export const {auth, db} = initFirebaseAdmin();
