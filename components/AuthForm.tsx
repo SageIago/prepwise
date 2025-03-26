@@ -11,6 +11,12 @@ import * as z from "zod";
 import FormField from "./shared/Form-Field";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "@/firebase/client";
+import { signIn, signUp } from "@/lib/actions/auth.action";
 
 interface AuthFormProps {
   type: "sign-in" | "sign-up";
@@ -36,22 +42,65 @@ const AuthForm = (props: AuthFormProps) => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
 
     try {
       // SUBMIT THE DATA TO THE DATABASE HERE
       if (props.type === "sign-up") {
-        console.log("SIGN-UP", values);
+        // console.log("SIGN-UP", values);
+
+        const { name, email, password } = values;
+
+        const userCredentials = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        const result = await signUp({
+          uid: userCredentials.user.uid,
+          email,
+          name: name!,
+          password,
+        });
+
+        if (!result?.success) {
+          toast.error(result?.message);
+          return;
+        }
 
         toast.success("Account Created Successfully, Please Sign In");
 
         router.push("/sign-in");
       } else {
+        // SIGN IN THE USER HERE
+        const { email, password } = values;
+
+        const userCredentials = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        // GENERATE A SHORT-LIVED AUTH TOKEN
+        const idToken = await userCredentials.user.getIdToken();
+
+        if (!idToken) {
+          toast.error("Failed to Sign In. Please Try Again");
+          return;
+        }
+
+
+        await signIn({
+          email,
+          idToken,
+        })
+
         toast.success("Signed In Successfully");
 
         router.push("/");
-        console.log("SIGN-IN", values);
+        // console.log("SIGN-IN", values);
       }
     } catch (error) {
       console.log(error);
@@ -69,8 +118,8 @@ const AuthForm = (props: AuthFormProps) => {
           <h2 className="text-light-100">PrepWise</h2>
         </div>
 
-        <h3 className="font-semibold font-mona-sans text-[28px] leading-[32px]">
-          Practice Interviews with AI
+        <h3 className="font-semibold font-mona-sans">
+          Practice Job Interviews with AI
         </h3>
 
         <Form {...form}>
